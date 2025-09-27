@@ -7,15 +7,20 @@ from pydantic import BaseModel
 from typing import List
 
 
-from fastapi import Header, HTTPException, Depends
 
-API_KEY = os.getenv("API_KEY", "changeme")  # default for local dev
-API_KEY_NAME = "x-api-key"
+from fastapi import Depends, HTTPException, Security
+from fastapi.security.api_key import APIKeyHeader
 
-def get_api_key(x_api_key: str = Header(...)):
-    if x_api_key != API_KEY:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-    return x_api_key
+# ---- API Key auth
+API_KEY = os.getenv("API_KEY", "changeme")   # default fallback
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+def get_api_key(api_key: str = Security(api_key_header)):
+    if api_key == API_KEY:
+        return api_key
+    else:
+        raise HTTPException(status_code=403, detail="Could not validate API KEY")
+
 
 MODEL_DIR = "models"
 
