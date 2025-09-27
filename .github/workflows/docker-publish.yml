@@ -34,8 +34,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build image
-        run: |
-          docker build -t $IMAGE_NAME:latest .
+        run: docker build -t $IMAGE_NAME:latest .
 
       - name: Push latest
         run: docker push $IMAGE_NAME:latest
@@ -45,3 +44,9 @@ jobs:
           SHA=${{ github.sha }}
           docker tag $IMAGE_NAME:latest $IMAGE_NAME:${SHA}
           docker push $IMAGE_NAME:${SHA}
+
+      - name: Verify container runs
+        run: |
+          docker run --rm -d -p 8000:8000 $IMAGE_NAME:latest
+          sleep 5
+          curl -f http://localhost:8000/ || (echo "Container failed to start" && exit 1)
