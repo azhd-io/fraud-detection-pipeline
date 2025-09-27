@@ -10,9 +10,15 @@ data/*
 !data/.gitkeep
 reports/*
 !reports/.gitkeep
+
+# Models
 models/*.pkl
 models/*.bin
 models/*.onnx
+
+# Keep JSON and joblib configs
+!models/*.json
+!models/*.joblib
 
 # Big CSVs / exports
 *.csv
