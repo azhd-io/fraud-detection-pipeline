@@ -6,6 +6,17 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
 
+
+from fastapi import Header, HTTPException, Depends
+
+API_KEY = os.getenv("API_KEY", "changeme")  # default for local dev
+API_KEY_NAME = "x-api-key"
+
+def get_api_key(x_api_key: str = Header(...)):
+    if x_api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    return x_api_key
+
 MODEL_DIR = "models"
 
 # ---- Load model + config at startup
@@ -65,14 +76,14 @@ def root():
     return {"message": "Fraud Detection API is running", "model": model_name, "threshold": threshold}
 
 @app.post("/predict_one")
-def predict_one(tx: Transaction):
+def predict_one(tx: Transaction, api_key: str = Depends(get_api_key)):
     df = pd.DataFrame([tx.dict()])
     prob = model.predict_proba(df)[:, 1][0]
     pred = int(prob >= threshold)
     return {"fraud_prob": prob, "is_fraud_pred": pred}
 
 @app.post("/predict_batch")
-def predict_batch(transactions: List[Transaction]):
+def predict_batch(transactions: List[Transaction], api_key: str = Depends(get_api_key)):
     df = pd.DataFrame([t.dict() for t in transactions])
     prob = model.predict_proba(df)[:, 1]
     pred = (prob >= threshold).astype(int)
