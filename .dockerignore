@@ -1,0 +1,16 @@
+.venv
+venv
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+.git
+.gitignore
+.data/
+data/
+reports/
+models/*.joblib
+models/inference_config.json
+.notebooks/
+.vscode/

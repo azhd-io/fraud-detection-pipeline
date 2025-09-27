@@ -13,8 +13,14 @@ cfg_path = os.path.join(MODEL_DIR, "inference_config.json")
 with open(cfg_path, "r") as f:
     cfg = json.load(f)
 
-model_name = cfg["model"]
-threshold  = float(cfg["threshold"])
+model_name = cfg.get("model", "RandomForest")
+
+# Choose which threshold to use: env var beats defaults
+choice = os.getenv("THRESHOLD_CHOICE", "f1").lower()  # "f1" or "recall95"
+if choice == "recall95":
+    threshold = float(cfg.get("threshold_recall95", cfg.get("threshold_f1", 0.5)))
+else:
+    threshold = float(cfg.get("threshold_f1", cfg.get("threshold_recall95", 0.5)))
 
 model_path = os.path.join(MODEL_DIR, f"model_{model_name}.joblib")
 model = joblib.load(model_path)
