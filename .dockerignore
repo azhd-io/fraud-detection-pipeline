@@ -10,7 +10,5 @@ __pycache__/
 .data/
 data/
 reports/
-models/*.joblib
-models/inference_config.json
 .notebooks/
 .vscode/
