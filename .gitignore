@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtualenv
+venv/
+
+# Data & artifacts (keep folders but not files)
+data/*
+!data/.gitkeep
+reports/*
+!reports/.gitkeep
+models/*.pkl
+models/*.bin
+models/*.onnx
+
+# Big CSVs / exports
+*.csv
+
+# Notebooks checkpoints
+.ipynb_checkpoints/

@@ -1,0 +1,29 @@
+name: CI - Run Tests
+
+on:
+  push:
+    branches: [ "main" ]   # run when you push to main branch
+  pull_request:
+    branches: [ "main" ]   # run when you make a PR into main
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest   # GitHub gives you a Linux VM
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3   # get your repo code
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'   # match your project version
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest
+
+    - name: Run tests
+      run: pytest tests/ --maxfail=1 --disable-warnings -q

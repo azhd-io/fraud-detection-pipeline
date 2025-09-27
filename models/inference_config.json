@@ -1,0 +1,5 @@
+{
+  "model": "RandomForest",
+  "threshold_f1": 0.5497668997668997,
+  "threshold_recall95": 0.0001368571268942567
+}
